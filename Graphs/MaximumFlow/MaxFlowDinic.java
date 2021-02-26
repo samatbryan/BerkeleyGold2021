@@ -1,3 +1,11 @@
+
+/**
+ * Max Flow Dinic Algorithm
+ * Tested on CSES: Distinct Routes, School Dance, Download Speed
+ * Tested on SPOJ: Fast Maximum Flow
+ * 
+ * Works even with duplicate edges and self loop edge
+ * */
 import java.util.*;
 
 public class MaxFlowDinic {
@@ -37,6 +45,43 @@ public class MaxFlowDinic {
                                                             // later in the sendFlow() function
         graph[u].add(forward);
         graph[v].add(backward);
+    }
+
+    /**
+     * Uses Dinic's algorithm, running in O(E*V*V) time. This is faster than Edmond
+     * Karp's which is O(E*E*V
+     * 
+     * 1. Initialize residual graph G as given graph.
+     * 
+     * 2) Do BFS of G to construct a level graph (or assign levels to vertices) and
+     * also check if more flow is possible.
+     * 
+     * 2a) If more flow is not possible, then return.
+     * 
+     * 2b) Send multiple flows in G using level graph until blocking flow is
+     * reached. Here using level graph means, in every flow, levels of path nodes
+     * should be 0, 1, 2... (in order) from s to t.)
+     * 
+     * @param src The source node of the network flow
+     * @param dst The destination node of the network flow
+     * @return The long maximum flow from src to dst. Returns -1 if src == dst
+     */
+    long maxFlow(int src, int dst) {
+        if (src == dst) // edge case
+            return -1;
+        long total_flow = 0;
+
+        while (bfs(src, dst)) { // while there is a still a valid flow from src to dst
+            int[] start = new int[this.n];
+
+            while (true) {
+                long flow = sendFlow(src, Integer.MAX_VALUE, dst, start);
+                if (flow == 0)
+                    break;
+                total_flow += flow;
+            }
+        }
+        return total_flow;
     }
 
     /**
@@ -101,40 +146,24 @@ public class MaxFlowDinic {
     }
 
     /**
-     * Uses Dinic's algorithm, running in O(E*V*V) time. This is faster than Edmond
-     * Karp's which is O(E*E*V
+     * Helper function to print a valid path after running maxflow.
      * 
-     * 1. Initialize residual graph G as given graph.
-     * 
-     * 2) Do BFS of G to construct a level graph (or assign levels to vertices) and
-     * also check if more flow is possible.
-     * 
-     * 2a) If more flow is not possible, then return.
-     * 
-     * 2b) Send multiple flows in G using level graph until blocking flow is
-     * reached. Here using level graph means, in every flow, levels of path nodes
-     * should be 0, 1, 2... (in order) from s to t.)
-     * 
-     * @param src The source node of the network flow
-     * @param dst The destination node of the network flow
-     * @return The long maximum flow from src to dst. Returns -1 if src == dst
+     * @param cur  The current node
+     * @param dst  The destination node
+     * @param path The path we are going to add to
      */
-    long maxFlow(int src, int dst) {
-        if (src == dst) // edge case
-            return -1;
-        long total_flow = 0;
-
-        while (bfs(src, dst)) { // while there is a still a valid flow from src to dst
-            int[] start = new int[this.n];
-
-            while (true) {
-                long flow = sendFlow(src, Integer.MAX_VALUE, dst, start);
-                if (flow == 0)
-                    break;
-                total_flow += flow;
+    void dfs(int cur, int dst, LinkedList<Integer> path) {
+        path.addLast(cur);
+        if (cur == dst)
+            return;
+        for (Edge e : graph[cur]) {
+            if (e.flow == 1) {
+                e.flow--;
+                dfs(e.node, dst, path);
+                return;
             }
         }
-        return total_flow;
+
     }
 
     /**
@@ -161,7 +190,7 @@ public class MaxFlowDinic {
         }
     }
 
-    static class Edge {
+    class Edge {
         int node;
         int flow;
         int capacity;
