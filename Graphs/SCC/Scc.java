@@ -2,13 +2,16 @@ import java.util.*;
 
 public class StronglyConnectedComponents {
 
-    // Given a directed graph, returns the scc table in O(N) time using Kosaraju
-    public int[] scc(ArrayList<Integer>[] graph) { // returns scc table that defines what scc the node i belongs to
-
+    /**
+     * Given a directed graph, returns the scc table in O(N) time using Kosaraju
+     * 
+     * @param graph A adjacency list graph
+     * @return An integer array where each index i represents which connected
+     *         component the node at i is in
+     */
+    public int[] scc(ArrayList<Integer>[] graph) {
         int n = graph.length;
 
-        // dfs and add to stack,
-        // pop from stack and add it to SCC
         Stack<Integer> stack = new Stack();
         HashSet<Integer> first_visited = new HashSet();
         for (int i = 0; i < n; i++) {
@@ -26,13 +29,19 @@ public class StronglyConnectedComponents {
             int cur_node = stack.pop();
             if (second_visited.contains(cur_node))
                 continue;
-            second_dfs(reverse_graph, stack, second_visited, scc, cur_node, scc_num);
+            second_dfs(reverse_graph, second_visited, scc, cur_node, scc_num);
             scc_num++;
         }
         return scc;
 
     }
 
+    /**
+     * Helper function for Kosaraju that will return the reverse of the graph
+     * 
+     * @param graph Adj list graph
+     * @return The reverse adj list graph
+     */
     public ArrayList<Integer>[] reverse(ArrayList<Integer>[] graph) {
         int n = graph.length;
         ArrayList<Integer>[] reverse_graph = new ArrayList<Integer>[n];
@@ -46,7 +55,15 @@ public class StronglyConnectedComponents {
         return reverse_graph;
     }
 
-    // add to stack for first dfs call
+    /**
+     * Helper function for Kosarajus. Adds every element visited to a stack using
+     * DFS
+     * 
+     * @param graph    Adj List graph
+     * @param stack    Stack for using kosarajus
+     * @param visited  Set of visited nodes
+     * @param cur_node The current node
+     */
     public void first_dfs(ArrayList<Integer>[] graph, Stack<Integer> stack, HashSet<Integer> visited, int cur_node) {
         if (visited.contains(cur_node))
             return;
@@ -59,10 +76,19 @@ public class StronglyConnectedComponents {
         stack.push(cur_node);
     }
 
-    // pop from stack to fill in SCC. All visited from this call is in the same
-    // stack
-    public void second_dfs(ArrayList<Integer>[] reverse_graph, Stack<Integer> stack, HashSet<Integer> visited,
-            int[] scc, int cur_node, int scc_num) {
+    /**
+     * Second DFS iteration for Kosarajus. It starts at some node and DFS from the
+     * reverse graph
+     * 
+     * @param reverse_graph The adj list reverse graph
+     * @param visited       The visited set
+     * @param scc           The scc integer array where each index i represents
+     *                      which scc node i belongs to
+     * @param cur_node      The current node
+     * @param scc_num       The current scc number that we will fill
+     */
+    public void second_dfs(ArrayList<Integer>[] reverse_graph, HashSet<Integer> visited, int[] scc, int cur_node,
+            int scc_num) {
         if (visited.contains(cur_node))
             return;
         visited.add(cur_node);
@@ -70,7 +96,7 @@ public class StronglyConnectedComponents {
         for (int neighbor : reverse_graph[cur_node]) {
             if (visited.contains(neighbor))
                 continue;
-            second_dfs(reverse_graph, stack, visited, scc, neighbor, scc_num);
+            second_dfs(reverse_graph, visited, scc, neighbor, scc_num);
         }
     }
 }

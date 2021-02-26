@@ -1,26 +1,4 @@
-static class Edge {
-    int node;
-    int flow;
-    int capacity;
-    int rev;
-
-    /**
-     * Directed edge to "node" with capacity
-     * 
-     * @param node     The "to" node of the edge
-     * @param flow     The amount of flow in this edge toward node
-     * @param capacity The total capacity that this edge has
-     * @param rev      A helper indexing integer that gives us the index of the
-     *                 reverse node. We can use graph[node].get(rev) to get the
-     *                 corresponding reverse edge
-     */
-    Edge(int node, int flow, int capacity, int rev) {
-        this.node = node;
-        this.flow = flow;
-        this.capacity = capacity;
-        this.rev = rev;
-    }
-}
+import java.util.*;
 
 public class MaxFlowDinic {
 
@@ -122,15 +100,6 @@ public class MaxFlowDinic {
         return 0;
     }
 
-    private void printGraph() {
-        for (int i = 1; i < this.n; i++) {
-            System.out.println("from node " + i);
-            for (Edge e : this.graph[i]) {
-                System.out.println(" to " + e.node + " flow " + e.flow + " capacity " + e.capacity);
-            }
-        }
-    }
-
     /**
      * Uses Dinic's algorithm, running in O(E*V*V) time. This is faster than Edmond
      * Karp's which is O(E*E*V
@@ -190,5 +159,46 @@ public class MaxFlowDinic {
                 return;
             }
         }
+    }
+
+    static class Edge {
+        int node;
+        int flow;
+        int capacity;
+        int rev;
+
+        /**
+         * Directed edge to "node" with capacity
+         * 
+         * @param node     The "to" node of the edge
+         * @param flow     The amount of flow in this edge toward node
+         * @param capacity The total capacity that this edge has
+         * @param rev      A helper indexing integer that gives us the index of the
+         *                 reverse node. We can use graph[node].get(rev) to get the
+         *                 corresponding reverse edge
+         */
+        Edge(int node, int flow, int capacity, int rev) {
+            this.node = node;
+            this.flow = flow;
+            this.capacity = capacity;
+            this.rev = rev;
+        }
+    }
+
+    /**
+     * Example usage of this class
+     */
+    public static void main(String[] args) {
+        int n = 100;
+        MaxFlowDinic maxflow = new MaxFlowDinic(n);
+        int from = 1;
+        int to = 2;
+        int capacity = 10;
+        int src = 1;
+        int dst = 2;
+
+        maxflow.addEdge(from, to, capacity);
+        maxflow.maxflow(src, dst);
+
     }
 }
