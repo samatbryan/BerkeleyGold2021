@@ -1,13 +1,12 @@
 import java.io.*;
 import java.util.*;
 
-
 public class SegTreeSetTo {
     public static void main(String[] args) {
 
         /*
-        *
-        * this is just a tester in the main for the segment tree
+         *
+         * this is just a tester in the main for the segment tree
          */
         Random random = new Random(5);
         int T = 2000;
@@ -37,12 +36,12 @@ public class SegTreeSetTo {
                         b[j] = val;
                     }
 
-                } else if (k == 1) { //pointUpdate
+                } else if (k == 1) { // pointUpdate
                     int index = random.nextInt(n);
                     int val = random.nextInt(100);
                     st.pointUpdate(index, val);
                     b[index] = val;
-                } else if (k == 2) { //rangeMax
+                } else if (k == 2) { // rangeMax
                     int l = random.nextInt(n);
                     int r = random.nextInt(n);
                     int max = Math.max(l, r);
@@ -55,7 +54,7 @@ public class SegTreeSetTo {
                     if (stans != ans)
                         System.out.println("FAILED RANGEMAX");
 
-                } else if (k == 3) { //rangeMin
+                } else if (k == 3) { // rangeMin
                     int l = random.nextInt(n);
                     int r = random.nextInt(n);
                     int max = Math.max(l, r);
@@ -67,7 +66,7 @@ public class SegTreeSetTo {
                         ans = Math.min(ans, b[j]);
                     if (stans != ans)
                         System.out.println("FAILED RANGEMIN");
-                } else if (k == 4) { //rangeSum
+                } else if (k == 4) { // rangeSum
                     int l = random.nextInt(n);
                     int r = random.nextInt(n);
                     int max = Math.max(l, r);
@@ -84,9 +83,10 @@ public class SegTreeSetTo {
             }
         }
     }
+
     /*
-    *
-    * does rangesum, rangemin, rangemax, rangeset, pointupdate
+     *
+     * does rangesum, rangemin, rangemax, rangeset, pointupdate
      */
     static class WorkingSegTreeSum {
         int leftmost, rightmost;
@@ -142,7 +142,8 @@ public class SegTreeSetTo {
         }
 
         public void prop() {
-            if (setTo == -1) return;
+            if (setTo == -1)
+                return;
             if (leftmost == rightmost) {
                 sum = setTo;
                 max = setTo;
@@ -191,11 +192,11 @@ public class SegTreeSetTo {
             // entirely disjoint
             if (l > rightmost || r < leftmost)
                 return 0;
-            //covers us
+            // covers us
             if (l <= leftmost && r >= rightmost) {
                 return sum();
             }
-            //others
+            // others
             return left.rangeSum(l, r) + right.rangeSum(l, r);
         }
 
@@ -204,11 +205,11 @@ public class SegTreeSetTo {
             // entirely disjoint
             if (l > rightmost || r < leftmost)
                 return Integer.MIN_VALUE;
-            //covers us
+            // covers us
             if (l <= leftmost && r >= rightmost) {
                 return max();
             }
-            //others
+            // others
             return Math.max(left.rangeMax(l, r), right.rangeMax(l, r));
         }
 
@@ -217,11 +218,11 @@ public class SegTreeSetTo {
             // entirely disjoint
             if (l > rightmost || r < leftmost)
                 return Integer.MAX_VALUE;
-            //covers us
+            // covers us
             if (l <= leftmost && r >= rightmost) {
                 return min();
             }
-            //others
+            // others
             return Math.min(left.rangeMin(l, r), right.rangeMin(l, r));
         }
     }
